@@ -5,6 +5,7 @@ local shiftX = 80
 local shiftY = -135
 local board = GameObject.Find("Canvas/GuildCrushWindow/Down/Board").transform
 local Obj = GameObject.Find("Canvas/GuildCrushWindow/Down/Board/Block").transform
+-- local blockBoard = GameObject.Find("Canvas/GuildCrushWindow/Down/Board/BlockBoard").transform
 Obj.gameObject:SetActive(false)
 
 function BlockItem:new(i,j,blockType)
