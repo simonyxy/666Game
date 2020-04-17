@@ -70,9 +70,9 @@ end
 
 function XXL:InitPositionTable()
     local spaceX = 147
-    local space = 143
+    local space = 142
     local shiftX = 66
-    local shiftY = -48
+    local shiftY = -49
     for i=1-maxI,maxI,1 do
         positionTable[i] ={}
         for j=1,maxJ,1 do
@@ -299,9 +299,9 @@ function XXL:Fall()--砖块掉落
                             else
                                 selectPanel:SetActive(false)
                                 -- Debug.LogError("!!!!进入FALL 稳态")
-                                if(TopFightPanel.EnemyData.Hp_cur)<=900 then
-                                    XXL:SpecialEvent()
-                                end
+                                -- if(TopFightPanel.EnemyData.Hp_cur)<=900 then
+                                --     XXL:SpecialEvent()
+                                -- end
                                 TopFightPanel:GetInstance():UpdateRound({[1] = {type = 13 }})
                             end
 
