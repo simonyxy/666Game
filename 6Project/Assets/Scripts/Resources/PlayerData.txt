@@ -33,8 +33,8 @@ local PlayerDate ={
     --固定道具加成
     ,Item = {
         Hp = 0.2         --总血量20%
-        ,Shield = 20    --护盾+20
-        ,Energy = 15    --能量+15
+        ,Shield = 20    --护盾+20 --没改
+        ,Energy = 15    --能量+15 --没改
     }
 }
 return PlayerDate
