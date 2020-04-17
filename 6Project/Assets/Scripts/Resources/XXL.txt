@@ -330,7 +330,7 @@ end
 
 function XXL:DestroyBlock(blockItem)
     -- print("1~~~~~~~~~")
-    -- self.animatorTable[tostring(blockItem)]:SetBool("IsDes",true)
+    self.animatorTable[tostring(blockItem)]:SetBool("IsDes",true)
     LuaTimer.Add(1200,function ()
         GameObject.Destroy(blockItem.block.gameObject)
     end)
