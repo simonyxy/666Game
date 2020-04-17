@@ -1,0 +1,36 @@
+--[[
+    @desc : 怪物信息
+    @author: yxy
+]]
+local EnemyData ={
+    Level_1 = {
+        Power         = 80      --攻击力
+        ,Shield_total = 20      --防御
+        ,Hp_total     = 580     --总血量
+    }
+    ,Level_2 = {
+        Power         = 100      --攻击力
+        ,Shield_total = 30      --总护盾
+        ,Hp_total     = 1000     --总血量
+    }
+    ,Level_3 = {
+        Power         = 150      --攻击力
+        ,Shield_total = 20      --总护盾
+        ,Hp_total     = 1500     --总血量
+    }
+
+    ,Power        = 60      --攻击力
+    ,Shield_total = 30      --总护盾
+    ,Hp_total     = 300     --总血量
+    ,Levle_cur = 1          --当前等级
+
+    ,HP_cur       = 300      --当前血量
+    ,Shield_cur  = 30
+    ,FightRound_Move = {
+        [1] = "Attack"   --第一个回合攻击
+        ,[2] = "Idel"   --第二个回合发呆
+        ,[3] = "Attack"  
+        ,[4] = "Sleep"   
+    }
+}
+return EnemyData

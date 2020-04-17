@@ -1,0 +1,40 @@
+--[[
+    @desc : 玩家信息
+    @author: yxy
+]]
+local PlayerDate ={
+    Level_1 = {
+        Power         = 60      --攻击力
+        -- ,Energy_total = 100     --总能量
+        ,Shield_total = 30      --防御
+        ,Hp_total     = 300     --总血量
+    }
+    ,Level_2 = {
+        Power         = 80      --攻击力
+        -- ,Energy_total = 100     --总能量
+        ,Shield_total = 40      --总护盾
+        ,Hp_total     = 560     --总血量
+    }
+    ,Level_3 = {
+        Power         = 100      --攻击力
+        -- ,Energy_total = 100     --总能量
+        ,Shield_total = 50      --总护盾
+        ,Hp_total     = 820     --总血量
+    }
+
+
+    ,Power        = 60      --攻击力
+    ,Shield_total = 30      --总护盾
+    ,Hp_total     = 300     --总血量
+    ,Level_cur = 1          --当前等级
+
+    ,Hp_cur       = 300      --当前血量
+    ,Shield_cur  = 30
+    --固定道具加成
+    ,Item = {
+        Hp = 0.2         --总血量20%
+        ,Shield = 20    --护盾+20
+        ,Energy = 15    --能量+15
+    }
+}
+return PlayerDate

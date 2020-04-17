@@ -1,0 +1,38 @@
+import "UnityEngine"
+import "UnityEngine.UI"
+UnityEngine.Time.fixedDeltaTime = 0.1
+-- import "System.Collections";
+-- import "System.Collections.Generic";
+require "EventSystem"
+local _XXL = require "XXL"
+local _Top = require "TopFightPanel"
+XXLPanel = _XXL:new()
+sprites = {}
+
+function Awake()
+    local TopFightPanel = _Top:new()
+    -- TopFightPanel:Init()
+    XXLPanel:Hello()
+    -- local data = {
+    --     [1] = {type = 1 , times = 1} --回血
+    --    ,[2] = {type = 2 , times = 1} --回盾
+    --    ,[3] = {type = 3 , times = 1} --加能量
+    --    ,[4] = {type = 4 , times = 1} --攻击
+    -- }
+    -- TopFightPanel:GetInstance():UpdateRound(data)
+end
+
+
+function LoadSprites()
+    for i = 1,6,1 do
+        -- Textures/Crush/Icon
+        sprites[i] = Resources.Load("Textures/7Tex/Icon_"..i,Sprite)
+        -- sprites[i] = Resources.Load("Textures/7Tex/Icon","Icon_"..i,Sprite)
+    end
+end
+
+LoadSprites()
+
+function Update()
+    x:Update()
+end
