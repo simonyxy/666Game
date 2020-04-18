@@ -199,14 +199,23 @@ function XXL:Judge()
     -- else
     --     return false
     -- end
-    local clearBlocks = XXL:IsOK666()--666工作室版本
+    --666工作室版本
     local blockNumberTable = {}
-    singleClearBlocks = {}
     self.fightData = {}
-    if(clearBlocks)then
-        for key, value in pairs(clearBlocks) do
-            for key1,value1 in pairs(value) do
-                singleClearBlocks[tostring(value1)] = value1
+    singleClearBlocks = {}
+    local clearBlocks
+    if(clickBlocks.firstBlock and
+     (clickBlocks.firstBlock.blockType == 5 
+        or clickBlocks.secondBlock.blockType==5))then--是否特殊消除
+        table.insert(singleClearBlocks,{clickBlocks.firstBlock,clickBlocks.secondBlock})
+        clearBlocks = {}
+    else
+        clearBlocks = XXL:IsOK666()
+        if(clearBlocks)then
+            for key, value in pairs(clearBlocks) do
+                for key1,value1 in pairs(value) do
+                    singleClearBlocks[tostring(value1)] = value1
+                end
             end
         end
     end
@@ -257,11 +266,16 @@ function XXL:Judge()
         for key,value in pairs(singleClearBlocks) do
             --singleClearBlocks存放了应该被消除的砖块信息，
             --与clickBlock的firstBlock比较可以确定新生成砖块位置
-            if(#value>=4)then
-                XXL:NewTypeBlock()
-            end
+            local firstBlockItem = value[1]
             for key1,value1 in pairs(value) do
-                XXL:DestroyBlock(value1)
+                if(#value<5)then
+                    XXL:DestroyBlock(value1)
+                else
+                    XXL:DestroyBlock(value1,firstBlockItem.i,firstBlockItem.j)
+                end
+            end
+            if(#value>4)then
+                XXL:NewTypeBlock(value[1].i,value[1].j)
             end
         end
         -- Debug.Log(s)
@@ -271,8 +285,15 @@ function XXL:Judge()
     end
 end
 
-function XXL:NewTypeBlock()
-    Debug.Log("hello")
+function XXL:NewTypeBlock(i,j)
+    local blockItem = BlockItem:new(i,j,5)
+    self.animatorTable[tostring(blockItem)] = blockItem.block:GetComponent(Animator)
+    blockItems[i][j] = blockItem
+    blockItems[i][j].block:GetComponent(UnityEngine.UI.Button).onClick:AddListener(
+            function()
+                    XXL:Click(blockItem)
+            end
+    )
 end
 
 function XXL:Fall()--砖块掉落
@@ -328,12 +349,21 @@ function XXL:Fall()--砖块掉落
     -- LeanTween.move(nil,nil,2).setOnComplete(XXL:SayHello())
 end
 
-function XXL:DestroyBlock(blockItem)
+function XXL:DestroyBlock(blockItem,i,j)--i,j为空时则正常消除，不为空时则为移动消除
     -- print("1~~~~~~~~~")
-    self.animatorTable[tostring(blockItem)]:SetBool("IsDes",true)
-    LuaTimer.Add(1200,function ()
-        GameObject.Destroy(blockItem.block.gameObject)
-    end)
+    if(i~=nil)then
+        print(i.." "..j)
+        LeanTween.move(blockItem.block,positionTable[i][j],time):setOnComplete(
+            function ()
+                GameObject.Destroy(blockItem.block.gameObject)
+            end
+        )
+    else
+        self.animatorTable[tostring(blockItem)]:SetBool("IsDes",true)
+        LuaTimer.Add(1200,function ()
+            GameObject.Destroy(blockItem.block.gameObject)
+        end)
+    end
     blockItems[blockItem.i][blockItem.j] = nil
     -- print("2~~~~~~~~~")
 end
