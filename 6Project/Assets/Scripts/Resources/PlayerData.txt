@@ -32,7 +32,7 @@ local PlayerDate ={
     ,Shield_cur  = 30
     --固定道具加成
     ,Item = {
-        Hp = 0.2         --总血量20%
+        Hp = 0.05         --总血量20%
         ,Shield = 20    --护盾+20 --没改
         ,Energy = 15    --能量+15 --没改
     }

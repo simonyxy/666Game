@@ -244,7 +244,7 @@ function XXL:Judge()
             self.fightData[1] = {type = t,number = num}
             -- Debug.Log("change!!!!!!!!!!!!!!!!!!")
         else
-            table.insert(self.fightData,{type = value[1].blockType,number = num})
+            table.insert(self.fightData,{type = t,number = num})
         end
     end
     -- Debug.Log(s)
