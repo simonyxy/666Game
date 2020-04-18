@@ -11,6 +11,10 @@ public class Entrance : MonoBehaviour
     private LuaFunction luaFunction = null;
     void Start()
     {
+
+        //指定游戏以640x960的分辨率打开游戏
+        Screen.SetResolution(640, 960, false);
+
         LuaSvr svr = new LuaSvr();// 如果不先进行某个LuaSvr的初始化的话,下面的mianState会爆一个为null的错误..
 
         //LuaSvr.mainState.loaderDelegate += LuaReourcesFileLoader;

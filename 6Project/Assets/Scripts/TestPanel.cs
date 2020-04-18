@@ -21,7 +21,7 @@ public class TestPanel : MonoBehaviour {
 	// Use this for initialization
 
 	void Start () {
-        GameObject.Find("Canvas/TestPanel/TestField/GameObject/InputField").GetComponent<InputField>().text = "0.2";
+        GameObject.Find("Canvas/TestPanel/TestField/GameObject/InputField").GetComponent<InputField>().text = "0.05";
         GameObject.Find("Canvas/TestPanel/TestField/GameObject1/InputField").GetComponent<InputField>().text = "0";
         GameObject.Find("Canvas/TestPanel/TestField/GameObject2/InputField").GetComponent<InputField>().text = "15";
         GameObject.Find("Canvas/TestPanel/TestField/GameObject3/InputField").GetComponent<InputField>().text = "60";
