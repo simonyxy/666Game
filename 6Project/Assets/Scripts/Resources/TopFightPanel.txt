@@ -64,7 +64,8 @@ function TopFightPanel:InitPanel()
     self.Boss    = GameObject.Find("GuildCrushWindow/TopPanel/Enemy/Boss")
     self.LosePanel=self.Main.transform:Find("LosePanel").gameObject
     self.WinPanel =self.Main.transform:Find("WinPanel").gameObject
-    self.WinPanel:GetComponent(Button).onClick:AddListener(
+    self.winBtn   =self.WinPanel.transform:Find("winBtn").gameObject
+    self.winBtn:GetComponent(Button).onClick:AddListener(
         function()
             if self._enemyHpLoading then 
                 LuaTimer.Delete(self._enemyHpLoading)
@@ -585,7 +586,7 @@ function TopFightPanel:EnemyGetHit(damage)
             if self._enemy_Round then 
                 LuaTimer.Delete(self._enemy_Round)
             end
-            LuaTimer.Add(150,function ()
+            LuaTimer.Add(2000,function ()
                 self:ShowWin()
             end)
         end
