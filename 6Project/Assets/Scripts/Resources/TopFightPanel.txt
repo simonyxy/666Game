@@ -1,6 +1,7 @@
 --[[
     @desc: 控制战斗界面
     @author:yxy
+    @ -- 很多变量都是大写开头，用来便于区分六七组（两份代码结构很像）
 ]]
 UnityEngine.Time.fixedDeltaTime = 0.1
 local TopFightPanel = TopFightPanel or {}
@@ -20,7 +21,6 @@ function TopFightPanel:Init()
     self:InitData(level)
     --生成Panel
     self:InitPanel()
-    -- Debug.Log("TopFightPanel:Init")
 end
 
 function TopFightPanel:InitData()
@@ -30,7 +30,7 @@ function TopFightPanel:InitData()
     self.EnemyData = require "EnemyData"
     self.PlayerData= require "PlayerData"
     --todo：获得当前等级
-    self.PlayerData.Level_cur = 1 --
+    self.PlayerData.Level_cur = 1 
     --初始化玩家总值
     self.PlayerData.Power = self.PlayerData["Level_".. self.PlayerData.Level_cur].Power
     self.PlayerData.Hp_total = self.PlayerData["Level_".. self.PlayerData.Level_cur].Hp_total
@@ -65,54 +65,7 @@ function TopFightPanel:InitPanel()
     self.LosePanel=self.Main.transform:Find("LosePanel").gameObject
     self.WinPanel =self.Main.transform:Find("WinPanel").gameObject
     self.winBtn   =self.WinPanel.transform:Find("winBtn").gameObject
-    self.winBtn:GetComponent(Button).onClick:AddListener(
-        function()
-            if self._enemyHpLoading then 
-                LuaTimer.Delete(self._enemyHpLoading)
-                self._enemyHpLoading = nil 
-            end
-            if self._enemy_Round then 
-                LuaTimer.Delete(self._enemy_Round)
-            end
-            if self.player_MoveTimer then 
-                LuaTimer.Delete(self.player_MoveTimer)
-            end
-            if self.player_AttackTimer then 
-                LuaTimer.Delete(self.player_AttackTimer)
-            end
-            if self._enemyHpLoadin then 
-                LuaTimer.Delete(self._enemyHpLoadin)
-            end
-            if self._BossMove then 
-                LuaTimer.Delete(self._BossMove)
-            end
-            MoveToMenu()
-        end
-    )
-    self.LosePanel:GetComponent(Button).onClick:AddListener(
-        function()
-            if self._enemyHpLoading then 
-                LuaTimer.Delete(self._enemyHpLoading)
-                self._enemyHpLoading = nil 
-            end
-            if self._enemy_Round then 
-                LuaTimer.Delete(self._enemy_Round)
-            end
-            if self.player_MoveTimer then 
-                LuaTimer.Delete(self.player_MoveTimer)
-            end
-            if self.player_AttackTimer then 
-                LuaTimer.Delete(self.player_AttackTimer)
-            end
-            if self._enemyHpLoadin then 
-                LuaTimer.Delete(self._enemyHpLoadin)
-            end
-            if self._BossMove then 
-                LuaTimer.Delete(self._BossMove)
-            end
-            MoveToMenu()
-        end
-    )
+    
     self.WinPanel:SetActive(false)
     self.LosePanel:SetActive(false)
     self.EnemyAttackImage = GameObject.Find("GuildCrushWindow/TopPanel/Enemy/EnemyAttack"):GetComponent(Image)
@@ -120,7 +73,6 @@ function TopFightPanel:InitPanel()
     --玩家相关
     self.Player  = self.C_Player.transform:Find("Player").gameObject
     self.hp      = self.C_Player.transform:Find("Hp").gameObject
-    self.hp:SetActive(false)
     self.Foot  = self.C_Player.transform:Find("Foot").gameObject
     self.Shield  = self.C_Player.transform:Find("Shield").gameObject
     self.BigAttack= self.C_Player.transform:Find("BigAttack").gameObject
@@ -130,19 +82,20 @@ function TopFightPanel:InitPanel()
     self.EnemyGetHitobj = self.Main.transform:Find("TopPanel/Enemy/EnemyGetHitTest").gameObject
     self.PlayerGetHitobj= self.C_Player.transform:Find("PlayerGetHitTest").gameObject
     self.PlayerGetHitTest=self.PlayerGetHitobj:GetComponent(Text)
-    self.PlayerGetHitobj:SetActive(false)
     self.EnemyGetHitTest = self.EnemyGetHitobj:GetComponent(Text)
-    self.EnemyGetHitobj:SetActive(false)
-    self.hpAddText.text= "+"..math.ceil(self.PlayerData.Hp_total * 0.2)
     
     self.ShieldText = self.Shield.transform:Find("ShieldText").gameObject:GetComponent(Text)
     self.ShieldText.text = self.PlayerData.Item.Shield
+    self.hpAddText.text= "+"..math.ceil(self.PlayerData.Hp_total * 0.2)
     
     self.Playerrect  = self.C_Player.transform
     self.FireBallrect= self.FireBall.transform
     self.BossAnim    = self.Boss:GetComponent(Animator)
     self.PlayerAnim  = self.C_Player:GetComponent(Animator)
     self.ShieldFightBack:SetActive(false)
+    self.hp:SetActive(false)
+    self.EnemyGetHitobj:SetActive(false)
+    self.PlayerGetHitobj:SetActive(false)
     self.hp:SetActive(false)
     self.Foot:SetActive(false)
     self.Shield:SetActive(false)
@@ -161,6 +114,8 @@ function TopFightPanel:InitPanel()
     self.UIState     = GameObject.Find("GuildCrushWindow/TopPanel/UIState")
     self.Hp_text     = self.UIState.transform:Find("Hp_text/Hp_text").gameObject:GetComponent(Text)
     self.Level_text  = self.UIState.transform:Find("Level_text/Level_text (1)").gameObject:GetComponent(Text)
+    selectPanel = GameObject.Find("Canvas/GuildCrushWindow/Down/SelectPanel")
+    selectPanel:SetActive(false)
     
     --怪物相关组件
     self.BossHpBar = self.UIState.transform:Find("BossHpBg/BossHpBar").gameObject:GetComponent(Image)
@@ -180,19 +135,55 @@ function TopFightPanel:InitPanel()
     self.foot_Status   = false; --鞋子状态
     self.is_stopBossRound = false --是否停下怪物当前回合
     self.is_jumpBossRound = false --是否跳过怪物当前回合
+    self:_addListener()
     -- local info = {
         --  [1] = {type = 14  } --3消回血
         -- ,[2] = {type = 16 }  --3消回盾
         -- ,[3] = {type = 4 } --3消加能量
-    --     -- ,[4] = {type = 3 } --4消回血
+    --     ,[4] = {type = 3 } --4消回血
     -- }
     -- 测试专用
-    -- LuaTimer.Add(5000,function() 
     --怪物收到攻击逻辑处理
     -- self:UpdateRound(info)
-    -- end)
 end
- 
+
+function TopFightPanel:_addListener()
+    self.winBtn:GetComponent(Button).onClick:AddListener(
+        function()
+            self:_delectListener()
+            MoveToMenu()
+        end
+    )
+    self.LosePanel:GetComponent(Button).onClick:AddListener(
+        function()
+            self:_delectListener()
+            MoveToMenu()
+        end
+    )
+end
+
+function TopFightPanel:_delectListener()
+    if self._enemyHpLoading then 
+        LuaTimer.Delete(self._enemyHpLoading)
+        self._enemyHpLoading = nil 
+    end
+    if self._enemy_Round then 
+        LuaTimer.Delete(self._enemy_Round)
+    end
+    if self.player_MoveTimer then 
+        LuaTimer.Delete(self.player_MoveTimer)
+    end
+    if self.player_AttackTimer then 
+        LuaTimer.Delete(self.player_AttackTimer)
+    end
+    if self._enemyHpLoadin then 
+        LuaTimer.Delete(self._enemyHpLoadin)
+    end
+    if self._BossMove then 
+        LuaTimer.Delete(self._BossMove)
+    end
+end
+
 function TopFightPanel:CallBack()
     XXLPanel:Fall()
 end
@@ -401,13 +392,12 @@ function TopFightPanel:RoleGetSomeThing()
     if self.no_stand then 
         return 
     end 
-    print("Stand")
     self.PlayerAnim:SetBool("PlayerFootStage",true)
-    LuaTimer.Add(500,function ()
+    LuaTimer.Add(300,function ()
         self.PlayerAnim:SetBool("PlayerFootStage",false)
     end)
 end
-
+--玩家攻击逻辑入口，需要把攻击类型和次数传入处理
 function TopFightPanel:PlayerAttack(attackTime)
     if attackTime == nil or attackTime == 0  then 
         return 
@@ -475,6 +465,7 @@ function TopFightPanel:PlayerAttackForward(i)
         self.Playerrect.localPosition = self.Playerrect.localPosition + self.playerMoveOffSet
     end
 end
+
 function TopFightPanel:PlayerBack()
     if self.playerMoveCount==nil  then 
     end
@@ -496,6 +487,7 @@ function TopFightPanel:PlayerBack()
         self.Playerrect.localPosition = self.Playerrect.localPosition - self.playerMoveOffSet
     end
 end
+--怪物受伤害逻辑，通过i和状态去计算damage
 function TopFightPanel:AttackEnemy(i)
     if self.playerMoveCount==nil  then 
         Debug.LogError("为调用Update就移动，违法")
@@ -602,10 +594,6 @@ function TopFightPanel:EnemyHpLoading()
     self.BossHpLoad.fillAmount = self.BossHpLoad.fillAmount - 0.02
     if self.BossHpLoad.fillAmount <= self.BossHpBar.fillAmount then
         if self._enemyHpLoading then  
-            --怪物扣完血之后,开始怪物的回合
-            -- LuaTimer.Add(200,function()
-                -- self:EnemyRound()
-            -- end)
             LuaTimer.Delete(self._enemyHpLoading)
             self._enemyHpLoading = nil 
         end
