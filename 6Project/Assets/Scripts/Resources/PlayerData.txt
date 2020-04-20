@@ -25,11 +25,13 @@ local PlayerDate ={
 
     ,Power        = 60      --攻击力
     ,Shield_total = 30      --总护盾
+    ,Foot_total   = 1.1     --足效果
     ,Hp_total     = 300     --总血量
-    ,Level_cur = 1          --当前等级
+    ,Level_cur  =  1          --当前等级
 
     ,Hp_cur       = 300      --当前血量
-    ,Shield_cur  = 30
+    ,Shield_cur   = 30
+    ,Foot_cur     = 1       --足效果增益
     --固定道具加成
     ,Item = {
         Hp = 0.05         --总血量20%

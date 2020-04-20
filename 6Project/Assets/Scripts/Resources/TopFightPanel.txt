@@ -38,6 +38,7 @@ function TopFightPanel:InitData()
     --初始化玩家当前值
     self.PlayerData.HP_cur= self.PlayerData.Hp_total
     self.PlayerData.Shield_cur = self.PlayerData.Shield_total
+    self.PlayerData.Foot_cur     =  1
     --初始化怪物总值
     self.EnemyData.Power    = self.EnemyData["Level_".. self.PlayerData.Level_cur].Power
     self.EnemyData.Hp_total = self.EnemyData["Level_".. self.PlayerData.Level_cur].Hp_total
@@ -276,7 +277,7 @@ function TopFightPanel:UpdateRound(info)
                 addHp = math.floor(addHp * 5 / 3 )
             end
             if self.foot_Status then 
-                addHp = math.floor(addHp * 1.1 )
+                addHp = math.floor(addHp * self.PlayerData.Foot_cur )
                 self.foot_Status = false
             end 
             for i= 1,v.time do 
@@ -311,7 +312,7 @@ function TopFightPanel:UpdateRound(info)
                 --更新当前护盾值
                 self.PlayerData.Shield_cur = math.floor(self.PlayerData.Shield_cur * 1.5)
                 if self.foot_Status then 
-                    self.PlayerData.Shield_cur = math.floor(self.PlayerData.Shield_cur * 1.1)
+                    self.PlayerData.Shield_cur = math.floor(self.PlayerData.Shield_cur * self.PlayerData.Foot_cur)
                     self.foot_Status =false 
                 end
                 --如果是四消
@@ -331,6 +332,7 @@ function TopFightPanel:UpdateRound(info)
             end
             --增加鞋子buff
             self.foot_Status = true
+            self.PlayerData.Foot_cur =self.PlayerData.Foot_cur * self.PlayerData.Foot_total * v.time
         --攻击
         elseif v.type == 4 or v.type == 8 or v.type == 12 or v.type==14 or v.type == 16 or v.type == 17  then
             if v.type ==16 then 
@@ -373,7 +375,10 @@ function TopFightPanel:SetFootBuffImage(state)
     self.Foot:SetActive(state)
     if state then 
         self:RoleGetSomeThing()
+    else
+        self.PlayerData.Foot_cur = 1
     end
+    Debug.LogError("当前足的值"..self.PlayerData.Foot_cur)
 end
 
 function TopFightPanel:RoleGetSomeThing()
@@ -526,7 +531,7 @@ function TopFightPanel:AttackEnemy(i)
         end)
     end
     if self.foot_Status then 
-        damage = math.floor(damage * 1.1)
+        damage = math.floor(damage * self.PlayerData.Foot_cur)
         self.foot_Status =false 
     end
     --怪物收到攻击逻辑处理
