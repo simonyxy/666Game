@@ -13,13 +13,13 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: BossAttack
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -97,7 +97,7 @@ AnimatorStateTransition:
   m_TransitionDuration: 0.25
   m_TransitionOffset: 0
   m_ExitTime: 0.75
-  m_HasExitTime: 1
+  m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
@@ -290,19 +290,19 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 1102115422158053272}
-    m_Position: {x: 552, y: 216, z: 0}
+    m_Position: {x: 744, y: 216, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102546724431826046}
-    m_Position: {x: 180, y: 72, z: 0}
+    m_Position: {x: 216, y: 72, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102003871630215024}
-    m_Position: {x: 156, y: 288, z: 0}
+    m_Position: {x: 228, y: 324, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102200767909128060}
-    m_Position: {x: 348, y: -144, z: 0}
+    m_Position: {x: 540, y: -168, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102991063616184672}
-    m_Position: {x: 383, y: -79, z: 0}
+    m_Position: {x: 864, y: -60, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []

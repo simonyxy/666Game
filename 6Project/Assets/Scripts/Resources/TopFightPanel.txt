@@ -12,8 +12,8 @@ function TopFightPanel:new()
 end
 
 function TopFightPanel:Init()
+    --事件机制
     EventSystem:GetInstance():init()
-    -- EventSystem:GetInstance():AddListener("Hello",function()  self:UpdateRound() end)
     --获得当前关卡
     local level = 1
     --生成关卡数据
@@ -85,12 +85,31 @@ function TopFightPanel:InitPanel()
             if self._BossMove then 
                 LuaTimer.Delete(self._BossMove)
             end
-            LoadScene.LoadScene__s(0)
+            MoveToMenu()
         end
     )
     self.LosePanel:GetComponent(Button).onClick:AddListener(
         function()
-            LoadScene.LoadScene__s(0)
+            if self._enemyHpLoading then 
+                LuaTimer.Delete(self._enemyHpLoading)
+                self._enemyHpLoading = nil 
+            end
+            if self._enemy_Round then 
+                LuaTimer.Delete(self._enemy_Round)
+            end
+            if self.player_MoveTimer then 
+                LuaTimer.Delete(self.player_MoveTimer)
+            end
+            if self.player_AttackTimer then 
+                LuaTimer.Delete(self.player_AttackTimer)
+            end
+            if self._enemyHpLoadin then 
+                LuaTimer.Delete(self._enemyHpLoadin)
+            end
+            if self._BossMove then 
+                LuaTimer.Delete(self._BossMove)
+            end
+            MoveToMenu()
         end
     )
     self.WinPanel:SetActive(false)
@@ -114,8 +133,6 @@ function TopFightPanel:InitPanel()
     self.EnemyGetHitTest = self.EnemyGetHitobj:GetComponent(Text)
     self.EnemyGetHitobj:SetActive(false)
     self.hpAddText.text= "+"..math.ceil(self.PlayerData.Hp_total * 0.2)
-    -- self.EnergyAddText = self.Energy.transform:Find("EnergyAddText").gameObject:GetComponent(Text)
-    -- self.EnergyAddText.text = self.PlayerData.Item.Energy
     
     self.ShieldText = self.Shield.transform:Find("ShieldText").gameObject:GetComponent(Text)
     self.ShieldText.text = self.PlayerData.Item.Shield
@@ -158,8 +175,6 @@ function TopFightPanel:InitPanel()
     self.Hp_text_Bar.fillAmount = self.PlayerData.HP_cur / self.PlayerData.Hp_total
     self.Level_text.text = 1
     
-    -- self.is_init = true
-    
     self.shield_Status = false; --盾的状态
     self.foot_Status   = false; --鞋子状态
     self.is_stopBossRound = false --是否停下怪物当前回合
@@ -170,17 +185,11 @@ function TopFightPanel:InitPanel()
         -- ,[3] = {type = 4 } --3消加能量
     --     -- ,[4] = {type = 3 } --4消回血
     -- }
-    -- self.foot_Status= true 
     -- 测试专用
-    -- self:UpdateRound(info) --假设现在传进来一个数据
-    
-    -- self:UpdateRound(info)
     -- LuaTimer.Add(5000,function() 
     --怪物收到攻击逻辑处理
     -- self:UpdateRound(info)
     -- end)
-    --给的状态
-
 end
  
 function TopFightPanel:CallBack()
@@ -487,7 +496,6 @@ function TopFightPanel:PlayerBack()
             self._player_BackMove = nil 
         end
     else 
-        -- Debug.Log("?????????????????????")
         self.Playerrect.localPosition = self.Playerrect.localPosition - self.playerMoveOffSet
     end
 end
@@ -495,9 +503,7 @@ function TopFightPanel:AttackEnemy(i)
     if self.playerMoveCount==nil  then 
         Debug.LogError("为调用Update就移动，违法")
     end
-    -- self.playerMoveCur = self.playerMoveCur + 1 
     --攻击展示结束
-    -- if self.playerMoveCur ==self.playerMoveCount then 
     self.playerMoveCur =  0  --玩家移动的计时清空
     --计算玩家造成伤害
     local damage = 1.25 * self.PlayerData.Power-self.EnemyData.Shield_cur
@@ -561,8 +567,6 @@ function TopFightPanel:AttackEnemy(i)
         self.player_AttackTimer = nil
     end
 end
-
-
 
 function TopFightPanel:EnemyGetHit(damage)
     if damage <= 0 then --说明是盾攻击
@@ -657,6 +661,7 @@ function TopFightPanel:EnemyRound()
         end
     end
 end
+
 function TopFightPanel:BossAttack(state)
     self.PlayerAnim:SetBool("PlayerHit",true)
     self.BossAnim:SetBool("BossAttack",true)
@@ -720,7 +725,6 @@ function TopFightPanel:BossAttack(state)
             end
         end
     end
-    
     --怪物的回合数加一
     self.EnemyData.FightRound_cur = (self.EnemyData.FightRound_cur % #self.EnemyData.FightRound_Move) +1
     Debug.Log("Boss当前的轮数是"..self.EnemyData.FightRound_cur)

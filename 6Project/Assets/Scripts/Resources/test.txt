@@ -1,15 +1,39 @@
 import "UnityEngine"
 import "UnityEngine.UI"
 UnityEngine.Time.fixedDeltaTime = 0.1
--- import "System.Collections";
--- import "System.Collections.Generic";
 require "EventSystem"
 local playerData = require "PlayerData"
 local EnemyData  = require "EnemyData"
 local _XXL = require "XXL"
--- local _Top = require "TopFightPanel"
 XXLPanel = _XXL:new()
 sprites = {}
+Main = Main or {}
+
+
+local welcomeCanvas     = GameObject.Find("Canvas/GameStartWindow")
+    local gameStartBtn      = welcomeCanvas.transform:Find("gameStartBtn/gameStartBtn"):GetComponent(Button)
+    local c_Player= GameObject.Find("GuildCrushWindow/TopPanel/C_Player")
+    local boss    = GameObject.Find("GuildCrushWindow/TopPanel/Enemy/Boss")
+    local UIState = GameObject.Find("GuildCrushWindow/TopPanel/UIState")
+    local hpText  = UIState.transform:Find("Hp_text").gameObject
+    local bosshpText=UIState.transform:Find("BossHpBg").gameObject
+    boss:SetActive(false)
+    hpText:SetActive(false)
+    c_Player:SetActive(false)
+    bosshpText:SetActive(false)
+    gameStartBtn.onClick:AddListener(
+        function()
+            --游戏开始
+            XXLPanel:Hello()
+            LeanTween.move(welcomeCanvas, Vector3(-3,1,3) , 1)
+            LuaTimer.Add(300,function ()
+                boss:SetActive(true)
+                hpText:SetActive(true)
+                c_Player:SetActive(true)
+                bosshpText:SetActive(true)
+            end)
+        end
+    )
 
 function Awake()
     playerData.Item.Hp = TestPanel.p_hp
@@ -18,34 +42,31 @@ function Awake()
     playerData["Level_1"].Power = TestPanel.p_power
     playerData["Level_1"].Hp_total = TestPanel.p_hp_total
     playerData["Level_1"].Shield_total= TestPanel.p_shield_total
-    -- playerData.Energy_total= TestPanel.p_energy_total
 
     EnemyData["Level_1"].Hp_total= TestPanel.b_hp_total
     EnemyData["Level_1"].Power= TestPanel.b_power
     EnemyData["Level_1"].Shield_total= TestPanel.b_fight_round
-    
-
-    XXLPanel:Hello()
-    -- local data = {
-    --     [1] = {type = 1 , times = 1} --回血
-    --    ,[2] = {type = 2 , times = 1} --回盾
-    --    ,[3] = {type = 3 , times = 1} --加能量
-    --    ,[4] = {type = 4 , times = 1} --攻击
-    -- }
-    -- TopFightPanel:GetInstance():UpdateRound(data)
+    Main:LoadSprites()
+    Main:InitGame()
 end
 
+function MoveToMenu()
+    LeanTween.move(welcomeCanvas, Vector3(0,1,3) , 1)  
+    boss:SetActive(false)
+    hpText:SetActive(false)
+    c_Player:SetActive(false)
+    bosshpText:SetActive(false)
+end
 
-function LoadSprites()
+function Main:LoadSprites()
     for i = 1,6,1 do
-        -- Textures/Crush/Icon
         sprites[i] = Resources.Load("Textures/7Tex/Icon_"..i,Sprite)
-        -- sprites[i] = Resources.Load("Textures/7Tex/Icon","Icon_"..i,Sprite)
     end
 end
 
-LoadSprites()
-
+function Main:InitGame()
+    
+end
 function Update()
     x:Update()
 end
