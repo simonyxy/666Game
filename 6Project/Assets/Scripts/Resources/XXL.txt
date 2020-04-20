@@ -6,7 +6,7 @@ local time = 0.35--砖块下落时间
 local typeNumber = 4
 local maxI = 7
 local maxJ = 8
--- local BlockTypeBuilder = require "BlockTypeBuilder"
+local BlockTypeBuilder = require "BlockTypeBuilder"
 blockItems = {}
 clickBlocks = {}
 positionTable = {}
@@ -47,7 +47,7 @@ function XXL:Hello()
     for i=1,maxI,1 do
         blockItems[i] ={}
         for j=1,maxJ,1 do
-            local blockItem = BlockItem:new(i,j,math.random(typeNumber))
+            local blockItem = BlockItem:new(i,j,BlockTypeBuilder:GetType())
             self.animatorTable[tostring(blockItem)] = blockItem.block:GetComponent(Animator)
             local btn = blockItem.block
             blockItems[i][j] = blockItem
@@ -71,7 +71,7 @@ function XXL:Hello()
         resetTime = resetTime + 1
         for key, value in pairs(clearBlocks) do  
             for key1, value1 in pairs(value) do
-                value1.blockType = math.random(typeNumber)
+                value1.blockType = BlockTypeBuilder:GetType()
                 value1.image.gameObject:GetComponent(UnityEngine.UI.Image).sprite = sprites[value1.blockType]
             end
         end
@@ -381,7 +381,8 @@ function XXL:Fall()--砖块掉落
             end
         end
         for i = 1,empty,1 do
-            local blockItem = BlockItem:new(1-i,j,math.random(typeNumber))
+            local blockItem = BlockItem:new(1-i,j,BlockTypeBuilder:GetType())
+            -- Debug.Log("i = "..blockItem.i..",j = "..blockItem.j..",t = "..blockItem.blockType)
             self.animatorTable[tostring(blockItem)] = blockItem.block:GetComponent(Animator)
             LeanTween.move(blockItem.block,positionTable[1-i+empty][j],time)
             XXL:MoveBlock(blockItem,1-i+empty,j)
@@ -434,7 +435,9 @@ function XXL:IsOK666()--666工作组检测
         for j=1,maxJ-2,1 do
             if(clearBlocks[i][j]==nil and
                 blockItems[i][j].blockType==blockItems[i][j+1].blockType and 
-                blockItems[i][j].blockType==blockItems[i][j+2].blockType)--成功检测到消除
+                blockItems[i][j].blockType==blockItems[i][j+2].blockType and
+                blockItems[i][j].blockType ~= 5--特殊砖块不造成3消
+                )--成功检测到消除
             then 
                 OK = true
                 -- self.fightData[#self.fightData+1] ={type = blockItems[i][j].blockType}
@@ -455,7 +458,9 @@ function XXL:IsOK666()--666工作组检测
         local i = 1
         while(i<=maxI-2) do
             if(blockItems[i][j].blockType==blockItems[i+1][j].blockType and 
-                blockItems[i][j].blockType==blockItems[i+2][j].blockType)--成功检测到消除
+                blockItems[i][j].blockType==blockItems[i+2][j].blockType and
+                blockItems[i][j].blockType ~= 5--特殊砖块不造成3消
+                )--成功检测到消除
             then 
                 OK = true
                 -- self.fightData[#self.fightData+1] = {type = blockItems[i][j].blockType}
@@ -473,7 +478,6 @@ function XXL:IsOK666()--666工作组检测
                     else
                         i = k - 1
                         -- Debug.Log("i="..i.."------------------")
-                        flagtt = true
                         break
                     end
                     k = k+1

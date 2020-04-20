@@ -1,7 +1,26 @@
 local BlockTypeBuilder = BlockTypeBuilder or {}
-local BlockTypeBuilder.typeNumber = 4
+local typeNumber = 4
+local typeQueue = {}
+local index = 1
 function BlockTypeBuilder:GetType()
-    return math.random(BlockTypeBuilder.typeNumber)
+    local type = math.random(typeNumber)
+    -- Debug.Log(#typeQueue)
+    if(#typeQueue<3)then
+        table.insert(typeQueue,type)
+        index = index + 1
+    else
+        while(type == typeQueue[index - 1] and type == typeQueue[index - 2])do
+            type = math.random(typeNumber)
+            -- Debug.Log("---------------------------------")
+        end
+        table.insert(typeQueue,type)
+        -- typeQueue[index- 3] = nil
+        --此处待优化，内存的释放
+        index = index + 1
+    end
+    -- Debug.Log(index)
+    -- Debug.Log(typeQueue[index-2])
+    return type
 end
 
 return BlockTypeBuilder
