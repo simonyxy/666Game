@@ -1,0 +1,7 @@
+local BlockTypeBuilder = BlockTypeBuilder or {}
+local BlockTypeBuilder.typeNumber = 4
+function BlockTypeBuilder:GetType()
+    return math.random(BlockTypeBuilder.typeNumber)
+end
+
+return BlockTypeBuilder
