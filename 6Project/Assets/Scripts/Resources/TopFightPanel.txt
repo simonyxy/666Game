@@ -333,10 +333,18 @@ function TopFightPanel:UpdateRound(info)
             --增加鞋子buff
             self.foot_Status = true
             self.PlayerData.Foot_cur =self.PlayerData.Foot_cur * self.PlayerData.Foot_total * v.time
+            if v.type == 7 then 
+                self.PlayerData.Foot_cur = self.PlayerData.Foot_cur * 4 / 3 
+            elseif v.type == 11 then
+                self.PlayerData.Foot_cur = self.PlayerData.Foot_cur * 5 / 3 
+            end
         --攻击
-        elseif v.type == 4 or v.type == 8 or v.type == 12 or v.type==14 or v.type == 16 or v.type == 17  then
-            if v.type ==16 then 
-                self.is_jumpBossRound =true 
+        elseif v.type == 4 or v.type == 8 or v.type == 12 or v.type==14 or  v.type == 15 or v.type == 16 or v.type == 17  then --14大招血，15大招盾，16大招足
+            if v.type == 15 then 
+                self.is_jumpBossRound = true
+            end
+            if v.type == 16 then 
+                self.is_stopBossRound = true 
             end 
             --总攻击数
             self.attackTime  = self.attackTime + v.time 
@@ -378,7 +386,6 @@ function TopFightPanel:SetFootBuffImage(state)
     else
         self.PlayerData.Foot_cur = 1
     end
-    Debug.LogError("当前足的值"..self.PlayerData.Foot_cur)
 end
 
 function TopFightPanel:RoleGetSomeThing()
@@ -399,7 +406,6 @@ function TopFightPanel:PlayerAttack(attackTime)
     Debug.LogError("当前攻击次数"..attackTime .. "攻击类型为：")
     for i = 1,attackTime do 
         -- 接下来的逻辑是 ： 向前移动 : 向前移动Timer结束 ：攻击动画 ：攻击 ： 攻击结束 ： 向后移动返回
-        Debug.LogError(self.attackType[i])
         local timer10 = LuaTimer.Add(2000*(i-1),function ()
             self:_PlayerAttack(i)
         end)
@@ -413,7 +419,7 @@ function TopFightPanel:_PlayerAttack(i)
     self.playerMoveOffSet = self.playerMoveOffSet or Vector3(20,0,0) 
     self.FireBallStartPosition  = self.FireBallrect.localPosition
     self.playerRoteOffSet = 0
-    if self.attackType[i] == 17 or self.attackType[i]==16 or  self.attackType[i]==14  then 
+    if self.attackType[i] == 17 or self.attackType[i]==16 or self.attackType[i] ==15 or  self.attackType[i]==14  then 
         self.BigAttack:SetActive(true)
         self.PlayerAnim:SetBool("PlayerBigAttack",true)
         self.player_MoveTimer = LuaTimer.Add(350,10,function()
@@ -515,6 +521,13 @@ function TopFightPanel:AttackEnemy(i)
         self.Hp_text.text    = self.PlayerData.HP_cur --[[  .. "/" .. self.PlayerData.Hp_total --更新血量 ]]
         self.Hp_text_Bar.fillAmount = self.PlayerData.HP_cur / self.PlayerData.Hp_total
 
+    elseif self.attackType[i] ==15 then 
+        damage = -1
+        Debug.LogError("播放攻击15 ， 击晕对面这哥们")
+        self.GetHitImage4:SetActive(true)
+        local timer21 = LuaTimer.Add(500,function ()
+            self.GetHitImage4:SetActive(false )
+        end)
     elseif self.attackType[i] ==16 then 
         Debug.LogError("播放攻击16 ， 不消耗行动力的攻击")
         self.GetHitImage8:SetActive(true)
@@ -552,33 +565,40 @@ end
 
 
 function TopFightPanel:EnemyGetHit(damage)
-    --怪物扣血
-    self.EnemyData.Hp_cur = self.EnemyData.Hp_cur - damage
-    --判断它是否死亡
-    if self.EnemyData.Hp_cur <= 0 then
-        self.EnemyData.Hp_cur = 0
-        --怪物死亡逻辑
-        self.bossisDeath = true
-        if self._enemy_Round then 
-            LuaTimer.Delete(self._enemy_Round)
+    if damage <= 0 then --说明是盾攻击
+        self.BossAnim:SetBool("GetHit",true)
+        LuaTimer.Add(500,function()
+            self.BossAnim:SetBool("GetHit",false) 
+        end)
+    else
+        --怪物扣血
+        self.EnemyData.Hp_cur = self.EnemyData.Hp_cur - damage
+        --判断它是否死亡
+        if self.EnemyData.Hp_cur <= 0 then
+            self.EnemyData.Hp_cur = 0
+            --怪物死亡逻辑
+            self.bossisDeath = true
+            if self._enemy_Round then 
+                LuaTimer.Delete(self._enemy_Round)
+            end
+            LuaTimer.Add(150,function ()
+                self:ShowWin()
+            end)
         end
-        LuaTimer.Add(150,function ()
-            self:ShowWin()
+        --Boss被攻击动画
+        self.BossAnim:SetBool("GetHit",true)
+        self.EnemyGetHitTest.text ="-" .. damage
+        self.EnemyGetHitobj:SetActive(true)
+        LuaTimer.Add(500,function()
+            self.BossAnim:SetBool("GetHit",false) 
+            self.EnemyGetHitobj:SetActive(false)
+        end)
+        self.BossHpText.text = self.EnemyData.Hp_cur     .. "/" .. self.EnemyData.Hp_total
+        self.BossHpBar.fillAmount = self.EnemyData.Hp_cur/self.EnemyData.Hp_total
+        self._enemyHpLoading = LuaTimer.Add(0,100,function()
+            self:EnemyHpLoading()
         end)
     end
-    --Boss被攻击动画
-    self.BossAnim:SetBool("GetHit",true)
-    self.EnemyGetHitTest.text ="-" .. damage
-    self.EnemyGetHitobj:SetActive(true)
-    LuaTimer.Add(500,function()
-        self.BossAnim:SetBool("GetHit",false) 
-        self.EnemyGetHitobj:SetActive(false)
-    end)
-    self.BossHpText.text = self.EnemyData.Hp_cur     .. "/" .. self.EnemyData.Hp_total
-    self.BossHpBar.fillAmount = self.EnemyData.Hp_cur/self.EnemyData.Hp_total
-    self._enemyHpLoading = LuaTimer.Add(0,100,function()
-        self:EnemyHpLoading()
-   end)
 end
 function TopFightPanel:EnemyHpLoading()
     self.BossHpLoad.fillAmount = self.BossHpLoad.fillAmount - 0.02
@@ -605,6 +625,7 @@ function TopFightPanel:EnemyRound()
         Debug.LogError("跳过Boss当前回合并且进入下一个阶段")
         self.EnemyData.FightRound_cur = (self.EnemyData.FightRound_cur % 8) +1
         self.EnemyNextMoveImage.sprite = Resources.Load("Boss/"..self.EnemyData.FightRound_Move[self.EnemyData.FightRound_cur],Sprite)   
+        self.is_jumpBossRound = false
     elseif self.is_stopBossRound then 
         Debug.LogError("跳过了Boss的回合")
         self.is_stopBossRound = false 
