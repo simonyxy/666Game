@@ -337,7 +337,6 @@ function TopFightPanel:UpdateRound(info)
         elseif v.type == 3 or v.type == 7 or v.type == 11 then
             --如果是玩家消除的，并且是第一个消除的足，怪物会眩晕一个回合
             if i == 1 and isFirstClick then 
-                Debug.LogError("理论上跳过怪物的回合")
                 self.is_stopBossRound = true
             end
             --增加鞋子buff
@@ -413,14 +412,12 @@ function TopFightPanel:PlayerAttack(attackTime)
     if attackTime == nil or attackTime == 0  then 
         return 
     end
-    Debug.LogError("当前攻击次数"..attackTime .. "攻击类型为：")
     for i = 1,attackTime do 
         -- 接下来的逻辑是 ： 向前移动 : 向前移动Timer结束 ：攻击动画 ：攻击 ： 攻击结束 ： 向后移动返回
         local timer10 = LuaTimer.Add(2000*(i-1),function ()
             self:_PlayerAttack(i)
         end)
     end
-    
 end
 
 function TopFightPanel:_PlayerAttack(i)
@@ -480,7 +477,6 @@ function TopFightPanel:PlayerAttackForward(i)
 end
 function TopFightPanel:PlayerBack()
     if self.playerMoveCount==nil  then 
-        Debug.LogError("为调用Update就移动，违法")
     end
     self.playerMoveCur = self.playerMoveCur + 1 
 
@@ -530,20 +526,17 @@ function TopFightPanel:AttackEnemy(i)
 
     elseif self.attackType[i] ==15 then 
         damage = -1
-        Debug.LogError("播放攻击15 ， 击晕对面这哥们")
         self.GetHitImage4:SetActive(true)
         local timer21 = LuaTimer.Add(500,function ()
             self.GetHitImage4:SetActive(false )
         end)
     elseif self.attackType[i] ==16 then 
-        Debug.LogError("播放攻击16 ， 不消耗行动力的攻击")
         self.GetHitImage8:SetActive(true)
         local timer21 = LuaTimer.Add(500,function ()
             self.GetHitImage8:SetActive(false )
         end)
     elseif self.attackType[i] == 17 then 
         damage = damage * 4
-        Debug.LogError("播放攻击波17")
         --播放玩家攻击冲击波
         self.GetHitImage12:SetActive(true)
         local timer20 = LuaTimer.Add(500,function ()
@@ -621,18 +614,15 @@ end
 
 function TopFightPanel:ShowWin()
     self.WinPanel:SetActive(true)
-    Debug.LogError("你赢了")
 end
 
 function TopFightPanel:EnemyRound()
     if self.is_jumpBossRound then 
         --怪物的回合数加一
-        Debug.LogError("跳过Boss当前回合并且进入下一个阶段")
         self.EnemyData.FightRound_cur = (self.EnemyData.FightRound_cur % 8) +1
         self.EnemyNextMoveImage.sprite = Resources.Load("Boss/"..self.EnemyData.FightRound_Move[self.EnemyData.FightRound_cur],Sprite)   
         self.is_jumpBossRound = false
     elseif self.is_stopBossRound then 
-        Debug.LogError("跳过了Boss的回合")
         self.is_stopBossRound = false 
         self.shield_Status =false
         --重置防御
@@ -641,7 +631,6 @@ function TopFightPanel:EnemyRound()
         --判断Boss当前的状态
         local state = self.EnemyData.FightRound_Move[self.EnemyData.FightRound_cur]
         if  state == "Attack" or state == "Angry" then 
-            Debug.LogError("怪物的回合计算")
             --当回合数为0 ， 进入怪物的攻击回合
             self.AttackCountDown:SetActive(false)
             self._BossMove = LuaTimer.Add(200,function ()
@@ -657,7 +646,6 @@ function TopFightPanel:EnemyRound()
         elseif state == "Idle" then 
             --怪物的回合数加一
             self.EnemyData.FightRound_cur = (self.EnemyData.FightRound_cur % 8) +1
-            Debug.Log("Boss当前的轮数是"..self.EnemyData.FightRound_cur)
             self.EnemyNextMoveImage.sprite = Resources.Load("Boss/"..self.EnemyData.FightRound_Move[self.EnemyData.FightRound_cur],Sprite)      
         end
     end
@@ -669,7 +657,6 @@ function TopFightPanel:BossAttack(state)
     self.EnemyAttackImage.gameObject:SetActive(true)
     --玩家扣血
     if self.PlayerData.HP_cur <= 0 then 
-        DeBug.LogError("玩家已经死了")
     else
         --计算伤害量 
         local bossDamage = math.ceil(0.72 * (self.EnemyData.Power - self.PlayerData.Shield_cur ))
@@ -679,7 +666,6 @@ function TopFightPanel:BossAttack(state)
         if bossDamage<= 0 then 
             bossDamage = 0 
         end
-        Debug.LogError("怪物当前造成伤害为"..bossDamage)
         --玩家反击伤害
         local playerDamage = math.ceil(0.2 * (self.PlayerData.Hp_total - self.PlayerData.HP_cur))
         --玩家扣血
@@ -696,7 +682,6 @@ function TopFightPanel:BossAttack(state)
             self.PlayerData.HP_cur = 0 
             self.Hp_text.text = self.PlayerData.HP_cur
             self.Hp_text_Bar.fillAmount = self.PlayerData.HP_cur / self.PlayerData.Hp_total
-            Debug.Log("你输了")
             self.LosePanel:SetActive(true)
         else
             --玩家血量的显示
@@ -707,7 +692,6 @@ function TopFightPanel:BossAttack(state)
                 --玩家反击
                 LuaTimer.Add(1000,function ()
                     self.PlayerAnim:SetBool("PlayerHit",false)
-                    Debug.LogError("玩家反击")
                     self.ShieldFightBack:SetActive(true)
                     self.PlayerAnim:SetBool("PlayerAttack2",true)
                     --演示300，怪物受伤！计算
@@ -728,9 +712,7 @@ function TopFightPanel:BossAttack(state)
     end
     --怪物的回合数加一
     self.EnemyData.FightRound_cur = (self.EnemyData.FightRound_cur % #self.EnemyData.FightRound_Move) +1
-    Debug.Log("Boss当前的轮数是"..self.EnemyData.FightRound_cur)
     self.EnemyNextMoveImage.sprite = Resources.Load("Boss/"..self.EnemyData.FightRound_Move[self.EnemyData.FightRound_cur],Sprite)
-
     LuaTimer.Add(500, function ()
         self.PlayerAnim:SetBool("PlayerHit",false)
         self.BossAnim:SetBool("BossAttack",false)
