@@ -26,11 +26,16 @@ local EnemyData ={
 
     ,HP_cur       = 300      --当前血量
     ,Shield_cur  = 30
+    ,FightRound_cur =1 
     ,FightRound_Move = {
         [1] = "Attack"   --第一个回合攻击
-        ,[2] = "Idel"   --第二个回合发呆
+        ,[2] = "Attack"   --第二个回合发呆
         ,[3] = "Attack"  
-        ,[4] = "Sleep"   
+        ,[4] = "Attack"  
+        ,[5] = "Attack"
+        ,[6] = "Attack"
+        ,[7] = "Idle"
+        ,[8] = "Angry" 
     }
 }
 return EnemyData

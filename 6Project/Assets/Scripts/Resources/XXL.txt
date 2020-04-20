@@ -239,6 +239,13 @@ function XXL:Judge()
             end
         end
         local t = value[1].blockType + (num-3)*typeNumber
+        if(#value==2)then
+            if(value[1].blockType==5)then
+                t = value[2].blockType + 13
+            else
+                t = value[1].blockType +13
+            end
+        end
         if(isFirstBlock)then
             table.insert(self.fightData,self.fightData[1])
             self.fightData[1] = {type = t,number = num}
