@@ -113,6 +113,23 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &468469343 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1391023595996012, guid: b7e2017341cfb084d94caa181d30ee09,
+    type: 2}
+  m_PrefabInternal: {fileID: 1763762426}
+--- !u!114 &468469348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 468469343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a895231490da6545890b1e1794f8704, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathtimer: 1
 --- !u!1001 &550435127
 Prefab:
   m_ObjectHideFlags: 0
@@ -632,32 +649,20 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 224374774823533348, guid: b7e2017341cfb084d94caa181d30ee09,
-        type: 2}
-      propertyPath: m_AnchoredPosition.x
-      value: 12.974976
-      objectReference: {fileID: 0}
     - target: {fileID: 1305654576107384, guid: b7e2017341cfb084d94caa181d30ee09, type: 2}
       propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1459059180583212, guid: b7e2017341cfb084d94caa181d30ee09, type: 2}
-      propertyPath: m_IsActive
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1535880342314866, guid: b7e2017341cfb084d94caa181d30ee09, type: 2}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1744395163040182, guid: b7e2017341cfb084d94caa181d30ee09, type: 2}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1002108525896672, guid: b7e2017341cfb084d94caa181d30ee09, type: 2}
-      propertyPath: m_IsActive
-      value: 0
+    - target: {fileID: 114643720770443642, guid: b7e2017341cfb084d94caa181d30ee09,
+        type: 2}
+      propertyPath: m_Color.a
+      value: 0.448
       objectReference: {fileID: 0}
-    - target: {fileID: 1794661204306874, guid: b7e2017341cfb084d94caa181d30ee09, type: 2}
+    - target: {fileID: 1391023595996012, guid: b7e2017341cfb084d94caa181d30ee09, type: 2}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}

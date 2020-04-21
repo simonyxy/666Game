@@ -62,13 +62,16 @@ function TopFightPanel:InitPanel()
     self.Main    = GameObject.Find("GuildCrushWindow")
     self.C_Player= GameObject.Find("GuildCrushWindow/TopPanel/C_Player")
     self.Boss    = GameObject.Find("GuildCrushWindow/TopPanel/Enemy/Boss")
+    self.Enemy   = GameObject.Find("GuildCrushWindow/TopPanel/Enemy")
+    self.EnemyAttackImage = GameObject.Find("GuildCrushWindow/TopPanel/Enemy/EnemyAttack"):GetComponent(Image)
     self.LosePanel=self.Main.transform:Find("LosePanel").gameObject
     self.WinPanel =self.Main.transform:Find("WinPanel").gameObject
     self.winBtn   =self.WinPanel.transform:Find("winBtn").gameObject
-    
+    self.bigattack_obj= self.Main.transform:Find("TopPanel/BigAttacking").gameObject
+    self.bigattack_btn = self.bigattack_obj.transform:Find("ClickImage").gameObject:GetComponent(Button)
     self.WinPanel:SetActive(false)
     self.LosePanel:SetActive(false)
-    self.EnemyAttackImage = GameObject.Find("GuildCrushWindow/TopPanel/Enemy/EnemyAttack"):GetComponent(Image)
+    self.bigattack_obj:SetActive(false)
     self.FireBall =self.C_Player.transform:Find("fireball").gameObject
     --玩家相关
     self.Player  = self.C_Player.transform:Find("Player").gameObject
@@ -114,8 +117,6 @@ function TopFightPanel:InitPanel()
     self.UIState     = GameObject.Find("GuildCrushWindow/TopPanel/UIState")
     self.Hp_text     = self.UIState.transform:Find("Hp_text/Hp_text").gameObject:GetComponent(Text)
     self.Level_text  = self.UIState.transform:Find("Level_text/Level_text (1)").gameObject:GetComponent(Text)
-    selectPanel = GameObject.Find("Canvas/GuildCrushWindow/Down/SelectPanel")
-    selectPanel:SetActive(false)
     
     --怪物相关组件
     self.BossHpBar = self.UIState.transform:Find("BossHpBg/BossHpBar").gameObject:GetComponent(Image)
@@ -136,15 +137,17 @@ function TopFightPanel:InitPanel()
     self.is_stopBossRound = false --是否停下怪物当前回合
     self.is_jumpBossRound = false --是否跳过怪物当前回合
     self:_addListener()
-    -- local info = {
-        --  [1] = {type = 14  } --3消回血
+     local info = {
+         [1] = {type = 18  } --3消回血
         -- ,[2] = {type = 16 }  --3消回盾
         -- ,[3] = {type = 4 } --3消加能量
     --     ,[4] = {type = 3 } --4消回血
-    -- }
+    }
     -- 测试专用
     --怪物收到攻击逻辑处理
-    -- self:UpdateRound(info)
+    LuaTimer.Add(2000,function ()
+        self:UpdateRound(info)
+    end)
 end
 
 function TopFightPanel:_addListener()
@@ -158,6 +161,12 @@ function TopFightPanel:_addListener()
         function()
             self:_delectListener()
             MoveToMenu()
+        end
+    )
+    self.bigattack_btn.onClick:AddListener(
+        function ()
+            local damage = math.random(5,15)
+            self:EnemyGetHit(damage)
         end
     )
 end
@@ -200,7 +209,7 @@ function TopFightPanel:UpdateRound(info)
     local isCallBack = true 
     local CallBackType = 1 --1.为道具回调 ， 2 为攻击回调
     local data = {}
-    local times= {[1]=0,[2]=0,[3]=0,[4]=0,[5]=0,[6] = 0 ,[7] = 0 ,[8] = 0 ,[9] = 0 ,[10] = 0 ,[11] = 0 ,[12] = 0 ,[13] = 0 ,[14] = 0 ,[15] = 0 ,[16] = 0 ,[17] = 0 ,}
+    local times= {[1]=0,[2]=0,[3]=0,[4]=0,[5]=0,[6] = 0 ,[7] = 0 ,[8] = 0 ,[9] = 0 ,[10] = 0 ,[11] = 0 ,[12] = 0 ,[13] = 0 ,[14] = 0 ,[15] = 0 ,[16] = 0 ,[17] = 0 ,[18] = 0}
     local isFirstClick = info.isFirstClick--小小的传参
     for i,v in ipairs(info) do
         if(type(v)=="table")then--小小的修改
@@ -243,6 +252,9 @@ function TopFightPanel:UpdateRound(info)
             elseif v.type ==17 then 
                 times[17] = times[17] + 1
                 CallBackType = 2
+            elseif v.type==18 then
+                times[18] = times[17] + 1
+                CallBackType = 3
             end
         end--小小的修改
     end
@@ -257,6 +269,10 @@ function TopFightPanel:UpdateRound(info)
             local timer06_ = LuaTimer.Add(1500 * (times[4] + times[8] +  times[12] + times[14] +times[16]+  times[17]), function ()
                 self:CallBack()
             end)
+        elseif CallBackType==3  then
+            local timer08_ = LuaTimer.Add(6000,function ()
+                self:CallBack()
+            end) 
         else
             local timer07_  = LuaTimer.Add(1000, function ()
                 self:CallBack()
@@ -360,6 +376,11 @@ function TopFightPanel:UpdateRound(info)
             end
             LuaTimer.Add(500,function ()
                 self:EnemyRound()
+            end)
+        elseif v.type==18  then
+            self.bigattack_obj:SetActive(true)
+            local timer09_ = LuaTimer.Add(6000,function ()
+                self.bigattack_obj:SetActive(false)
             end)
         else
             Debug.LogError("传进来的数据是错的")
@@ -578,7 +599,8 @@ function TopFightPanel:EnemyGetHit(damage)
         --Boss被攻击动画
         self.BossAnim:SetBool("GetHit",true)
         self.EnemyGetHitTest.text ="-" .. damage
-        self.EnemyGetHitobj:SetActive(true)
+        local enemyadd = GameObject.Instantiate(self.EnemyGetHitobj,self.Enemy.transform)
+        enemyadd:SetActive(true)
         LuaTimer.Add(500,function()
             self.BossAnim:SetBool("GetHit",false) 
             self.EnemyGetHitobj:SetActive(false)
