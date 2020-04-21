@@ -136,18 +136,24 @@ function TopFightPanel:InitPanel()
     self.foot_Status   = false; --鞋子状态
     self.is_stopBossRound = false --是否停下怪物当前回合
     self.is_jumpBossRound = false --是否跳过怪物当前回合
+    self.bigattackList = {}
+    for i= 1,4 do
+        self.bigattackList[i] = self.bigattack_obj.transform:Find("AttackTrail"..i).gameObject
+        self.bigattackList[i]:SetActive(false)
+    end
+
     self:_addListener()
-     local info = {
-         [1] = {type = 18  } --3消回血
+
+    -- 测试专用
+    --  local info = {
+        --  [1] = {type = 18  } --3消回血
         -- ,[2] = {type = 16 }  --3消回盾
         -- ,[3] = {type = 4 } --3消加能量
     --     ,[4] = {type = 3 } --4消回血
-    }
-    -- 测试专用
-    --怪物收到攻击逻辑处理
-    LuaTimer.Add(2000,function ()
-        self:UpdateRound(info)
-    end)
+    -- }
+    -- LuaTimer.Add(2000,function ()
+        -- self:UpdateRound(info)
+    -- end)
 end
 
 function TopFightPanel:_addListener()
@@ -166,6 +172,9 @@ function TopFightPanel:_addListener()
     self.bigattack_btn.onClick:AddListener(
         function ()
             local damage = math.random(5,15)
+            local index =math.random(1,4)
+            local tempeffect= GameObject.Instantiate(self.bigattackList[index],self.bigattack_obj.transform)
+            tempeffect:SetActive(true)
             self:EnemyGetHit(damage)
         end
     )
