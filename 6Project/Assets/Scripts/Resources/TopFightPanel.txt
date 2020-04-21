@@ -131,7 +131,7 @@ function TopFightPanel:InitPanel()
     self.Hp_text.text    = self.PlayerData.HP_cur  --[[  .. "/" .. self.PlayerData.Hp_total]]
     self.Hp_text_Bar.fillAmount = self.PlayerData.HP_cur / self.PlayerData.Hp_total
     self.Level_text.text = 1
-    
+    self.BossHpLoad.fillAmount = 1
     self.shield_Status = false; --盾的状态
     self.foot_Status   = false; --鞋子状态
     self.is_stopBossRound = false --是否停下怪物当前回合
@@ -632,6 +632,7 @@ function TopFightPanel:EnemyHpLoading()
 end
 
 function TopFightPanel:ShowWin()
+    GameObject.Find("Canvas/GameStartWindow"):GetComponent(AudioSource).enabled = false
     self.WinPanel:SetActive(true)
 end
 
@@ -701,6 +702,7 @@ function TopFightPanel:BossAttack(state)
             self.PlayerData.HP_cur = 0 
             self.Hp_text.text = self.PlayerData.HP_cur
             self.Hp_text_Bar.fillAmount = self.PlayerData.HP_cur / self.PlayerData.Hp_total
+            GameObject.Find("Canvas/GameStartWindow"):GetComponent(AudioSource).enabled = false
             self.LosePanel:SetActive(true)
         else
             --玩家血量的显示
@@ -716,7 +718,7 @@ function TopFightPanel:BossAttack(state)
                     --演示300，怪物受伤！计算
                     LuaTimer.Add(500,function ()
                         self.ShieldFightBack:SetActive(false)
-                        self.shield_Status= false
+                        self.shield_Status = false
                         --重置防御
                         self.PlayerData.Shield_cur = self.PlayerData.Shield_total
                         self:SetShieldImage(false)

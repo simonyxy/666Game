@@ -14,6 +14,8 @@ function XXL:new()
     local o = {}
     setmetatable( o, { __index = self })
     self.animatorTable = {}
+    self.combo = 0
+    self.clearSoundsTable = {}
     -- for i = 1,maxI,1 do
     --     table.insert(self.animatorTable,{})
     -- end
@@ -22,6 +24,7 @@ end
 
 function XXL:Hello()
     XXL:InitPositionTable()
+    XXL:InitClearSoundsTable()
     TopFightPanel:Init()
     aa = { ii = 1}
     bb = { ii = 1}
@@ -81,6 +84,13 @@ function XXL:Hello()
     -- XXL:Show()
 end
 
+
+function XXL:InitClearSoundsTable()
+    for i=1,4 do
+        table.insert(self.clearSoundsTable,Resources.Load("Sounds/ClearSounds/clear" .. i,AudioClip))
+    end
+end
+
 function XXL:InitPositionTable()
     local spaceX = 147
     local space = 142
@@ -122,6 +132,14 @@ end
 
 function XXL:SelectBLock(block)
     clickBlocks.firstBlock = block
+    local image = block.selectImage:GetComponent(Image)
+    if(TopFightPanel:GetInstance().foot_Status)then
+        Debug.Log("fffffffffffffffffffffffoot")
+        image.color = Color(255,0,0,1)
+    else
+        image.color = Color(0,0,0,1)
+    end
+    Debug.Log(TopFightPanel:GetInstance().shield_Status)
     block.selectImage.gameObject:SetActive(true)
 end
 
@@ -147,8 +165,10 @@ function XXL:Click(blockItem)
             -- (clickBlocks.firstBlock.j==blockItem.j and math.abs(clickBlocks.firstBlock.i-blockItem.i)==1))--两个砖块是否相邻
             if(true)
             then
+                self.combo = 0
                 selectPanel:SetActive(true)
                 clickBlocks.secondBlock = blockItems[i][j]
+
                 clickBlocks.firstBlock.selectImage.gameObject:SetActive(false)
                 LeanTween.move( clickBlocks.firstBlock.block, positionTable[clickBlocks.secondBlock.i][clickBlocks.secondBlock.j], time)
                 LeanTween.move( clickBlocks.secondBlock.block, positionTable[clickBlocks.firstBlock.i][clickBlocks.firstBlock.j], time):setOnComplete(
@@ -184,8 +204,8 @@ function XXL:Click(blockItem)
                             )
                             XXL:ExchangeBlcok(clickBlocks.firstBlock,clickBlocks.secondBlock)
                         end
-                            clickBlocks.firstBlock = nil
-                            clickBlocks.secondBlock = nil
+                        clickBlocks.firstBlock = nil
+                        clickBlocks.secondBlock = nil
                     end
                 )
                 XXL:ExchangeBlcok(clickBlocks.firstBlock,clickBlocks.secondBlock)
@@ -199,20 +219,7 @@ function XXL:Click(blockItem)
     -- Debug.Log("first:i="..clickBlocks.firstBlock.i..",j="..clickBlocks.firstBlock.j)
 end
 
-
 function XXL:Judge()
-    -- local clearBlocks = XXL:IsOK()--诗悦777版本
-    -- if(clearBlocks)then
-    --     for key, value in pairs(clearBlocks) do  
-    --         for key1, value1 in pairs(value) do
-    --             XXL:DestroyBlock(value1)
-    --         end
-    --     end
-    --     return true
-    -- else
-    --     return false
-    -- end
-    --666工作室版本
     local blockNumberTable = {}
     self.fightData = {}
     singleClearBlocks = {}
@@ -270,31 +277,58 @@ function XXL:Judge()
     -- Debug.Log(s)
 
     -- s = ""
+
     if(clearBlocks)then
-        -- for key, value in pairs(clearBlocks) do  
-        --     for key1, value1 in pairs(value) do
-        --         -- s = s.."{"
-        --         for key2, value2 in pairs(value1) do
-        --             -- s = s.."i"..value2.i.."j"..value2.j.."t"..value2.blockType..","
-        --             if(blockItems[value2.i][value2.j] ~= nil)then
-        --                 XXL:DestroyBlock(value2)
-        --             end
-        --         end
-        --         -- s = s.."}\n"
-        --     end
-        -- end
+        self.combo = self.combo + 1
+        if(self.combo==1)then
+            if(clickBlocks.firstBlock.blockType~=5)then
+                AudioSource.PlayClipAtPoint(self.clearSoundsTable[clickBlocks.firstBlock.blockType], clickBlocks.firstBlock.block.transform.position)
+            else
+                AudioSource.PlayClipAtPoint(self.clearSoundsTable[clickBlocks.secondBlock.blockType], clickBlocks.secondBlock.block.transform.position)
+            end
+        else
+            local clearSoundFlag = true
+            if(clearSoundFlag)then
+                for key,value in pairs(singleClearBlocks) do
+                    if(value[1].blockType == 4)then
+                        AudioSource.PlayClipAtPoint(self.clearSoundsTable[4], value[1].block.transform.position)
+                        clearSoundFlag = false
+                        break
+                    end
+                end
+            end
+            if(clearSoundFlag)then
+                for key,value in pairs(singleClearBlocks) do
+                    if(value[1].blockType == 2)then
+                        AudioSource.PlayClipAtPoint(self.clearSoundsTable[2], value[1].block.transform.position)
+                        clearSoundFlag = false
+                        break
+                    end
+                end
+            end
+            if(clearSoundFlag)then
+                for key,value in pairs(singleClearBlocks) do
+                    if(value[1].blockType == 1)then
+                        AudioSource.PlayClipAtPoint(self.clearSoundsTable[1], value[1].block.transform.position)
+                        clearSoundFlag = false
+                        break
+                    end
+                end
+            end
+            if(clearSoundFlag)then
+                for key,value in pairs(singleClearBlocks) do
+                    AudioSource.PlayClipAtPoint(self.clearSoundsTable[1], value[1].block.transform.position)
+                    break
+                end
+            end
+            --声效播放优先级
+        end
         for key,value in pairs(singleClearBlocks) do
             --singleClearBlocks存放了应该被消除的砖块信息，
             --与clickBlock的firstBlock比较可以确定新生成砖块位置
             local firstBlockItem = value[1]
+
             for key1,value1 in pairs(value) do
-                -- if(#value<5 and )then
-                --     XXL:DestroyBlock(value1)
-                -- else
-                --     if(XXL:IsInLine(value))then
-                --         XXL:DestroyBlock(value1,firstBlockItem.i,firstBlockItem.j)
-                --     end
-                -- end
                 if(#value>=5 and XXL:IsInLine(value))then
                     XXL:DestroyBlock(value1,firstBlockItem.i,firstBlockItem.j)
                 else
@@ -315,21 +349,58 @@ function XXL:Judge()
 end
 
 function XXL:IsInLine(value)--判断是否同行或同列
-    b1 = true
-    b2 = true
-    for key1,value1 in pairs(value) do
-        if(value1.i~=value[1].i)then
-            b1 = false
+    -- b1 = true
+    -- b2 = true
+    -- for key1,value1 in pairs(value) do
+    --     if(value1.i~=value[1].i)then
+    --         b1 = false
+    --         break
+    --     end
+    -- end
+    -- for key1,value1 in pairs(value) do
+    --     if(value1.j~=value[1].j)then
+    --         b2 = false
+    --         break
+    --     end
+    -- end
+    -- return b1 or b2
+    local t = {}
+    local t1 = {}
+    local b = false
+    for key1,value1 in pairs(value) do--表统计是否有一个元素超过5个，超过则视为同行或同列
+        Debug.Log("i="..value1.i..",j="..value1.j)
+        local i = value1.i
+        if(t[i] == nil)then
+            t[i] = 0
+        end
+        if(t[i]>=5)then
+            b = true
             break
         end
-    end
-    for key1,value1 in pairs(value) do
-        if(value1.j~=value[1].j)then
-            b2 = false
+        t[i] = t[i] + 1
+        -- s = "{"
+        -- for key,value in pairs(t) do
+        --     s = s .. key.."="..value..","
+        -- end
+        -- s = s .. "}"
+        -- Debug.Log(s)
+        local j = value1.j
+        if(t1[j] == nil)then
+            t1[j] = 0
+        end
+        t1[j] = t1[j] + 1
+        if(t1[j]>=5)then
+            b = true
             break
         end
+        -- s = "{"
+        -- for key,value in pairs(t1) do
+        --     s = s .. key.."="..value..","
+        -- end
+        -- s = s .. "}"
+        -- Debug.Log(s)
     end
-    return b1 or b2
+    return b
 end
 
 function XXL:NewTypeBlock(i,j)

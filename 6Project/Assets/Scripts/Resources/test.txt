@@ -61,6 +61,7 @@ function Main:InitGame()
         --游戏开始
         XXLPanel:Hello()
         LeanTween.move(welcomeCanvas, Vector3(-3,1,3) , 1)
+        AudioSource.PlayClipAtPoint(gameStartBtn.gameObject:GetComponent(AudioSource).clip,gameStartBtn.gameObject.transform.position)
         LuaTimer.Add(300,function ()
             boss:SetActive(true)
             hpText:SetActive(true)
