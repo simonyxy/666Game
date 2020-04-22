@@ -47,6 +47,8 @@ function LevelSelectPanel:InitPanel()
 
     self.RoleInfo   = self.selectPanel.transform:Find("RoleInfo").gameObject
     self.RoleHpText = self.RoleInfo.transform:Find("Hp"):GetComponent(Text)
+    self.Lv1        = self.RoleInfo.transform:Find("Lv1").gameObject
+    self.Lv2        = self.RoleInfo.transform:Find("Lv2").gameObject
     self.RoleDamageText = self.RoleInfo.transform:Find("Damage"):GetComponent(Text)
     self.RoleSheildText = self.RoleInfo.transform:Find("Sheild"):GetComponent(Text)
 
@@ -69,6 +71,8 @@ function LevelSelectPanel:_addListener()
         function () 
             LeanTween.move(self.player.transform , Vector3(123,-820,0) , 0.5)
             Level_cur = 1
+            self.Lv1:SetActive(true)
+            self.Lv2:SetActive(false)
             XXLPanel:Hello()
             self.mainCanvas:SetActive(true)
             self.mainAnim:SetBool("MainGameInScene",true)
@@ -90,6 +94,8 @@ function LevelSelectPanel:_addListener()
         function () 
             LeanTween.move(self.player.transform , Vector3(-190,-562,0) , 1)
             Level_cur = 2
+            self.Lv1:SetActive(false)
+            self.Lv2:SetActive(true)
             XXLPanel:Hello()
             self.mainCanvas:SetActive(true)
             self.mainAnim:SetBool("MainGameInScene",true)

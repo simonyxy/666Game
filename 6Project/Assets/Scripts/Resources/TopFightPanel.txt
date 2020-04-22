@@ -140,7 +140,13 @@ function TopFightPanel:InitPanel()
         self.bigattackList[i] = self.bigattack_obj.transform:Find("AttackTrail"..i).gameObject
         self.bigattackList[i]:SetActive(false)
     end
-
+    --音效
+    self.attack_audio      = Resources.Load("Sounds/Move/attack",AudioClip)
+    self.shield_back_audio = Resources.Load("Sounds/Move/defen" ,AudioClip)
+    self.foot_audio        = Resources.Load("Sounds/Move/foot"  ,AudioClip)
+    self.add_Hp_audio      = Resources.Load("Sounds/Move/heart" ,AudioClip)
+    self.big_attack_audio  = Resources.Load("Sounds/Move/jian"  ,AudioClip)
+    self.big_shield_audio  = Resources.Load("Sounds/Move/sheild",AudioClip)
     self:_addListener()
 end
 
@@ -520,6 +526,7 @@ function TopFightPanel:AttackEnemy(i)
         damage = math.floor(damage * 5 / 3)
     elseif self.attackType[i] ==14 then 
         damage = math.floor(damage * 1.2)
+        AudioSource.PlayClipAtPoint(self.add_Hp_audio,self.Player.transform.position)
         --播放回血的动画
         self.GetHpAdd14:SetActive(true)
         local timer22 = LuaTimer.Add(500, function ()
@@ -535,17 +542,20 @@ function TopFightPanel:AttackEnemy(i)
         self.Hp_text_Bar.fillAmount = self.PlayerData.HP_cur / self.PlayerData.Hp_total
 
     elseif self.attackType[i] ==15 then 
+        AudioSource.PlayClipAtPoint(self.big_shield_audio,self.Player.transform.position)
         damage = -1
         self.GetHitImage4:SetActive(true)
         local timer21 = LuaTimer.Add(500,function ()
             self.GetHitImage4:SetActive(false )
         end)
     elseif self.attackType[i] ==16 then 
+        AudioSource.PlayClipAtPoint(self.foot_audio,self.Player.transform.position)
         self.GetHitImage8:SetActive(true)
         local timer21 = LuaTimer.Add(500,function ()
             self.GetHitImage8:SetActive(false )
         end)
     elseif self.attackType[i] == 17 then 
+        AudioSource.PlayClipAtPoint(self.big_attack_audio,self.Player.transform.position)
         damage = damage * 4
         --播放玩家攻击冲击波
         self.GetHitImage12:SetActive(true)
@@ -690,7 +700,7 @@ function TopFightPanel:BossAttack(state)
             self.PlayerData.HP_cur = 0 
             self.Hp_text.text = self.PlayerData.HP_cur
             self.Hp_text_Bar.fillAmount = self.PlayerData.HP_cur / self.PlayerData.Hp_total
-            GameObject.Find("Canvas/GameStartWindow"):GetComponent(AudioSource).enabled = false
+            GameObject.Find("Canvas/BgAudio"):GetComponent(AudioSource).enabled = false
             self.LosePanel:SetActive(true)
         else
             --玩家血量的显示
@@ -698,11 +708,13 @@ function TopFightPanel:BossAttack(state)
             self.Hp_text_Bar.fillAmount = self.PlayerData.HP_cur / self.PlayerData.Hp_total
             --判断玩家是否会反击
             if self.shield_Status ==true then 
+                AudioSource.PlayClipAtPoint(self.shield_back_audio,self.Player.transform.position)
                 --玩家反击
                 LuaTimer.Add(1000,function ()
                     self.PlayerAnim:SetBool("PlayerHit",false)
                     self.ShieldFightBack:SetActive(true)
                     self.PlayerAnim:SetBool("PlayerAttack2",true)
+                    AudioSource.PlayClipAtPoint(self.attack_audio,self.Player.transform.position)
                     --演示300，怪物受伤！计算
                     LuaTimer.Add(500,function ()
                         self.ShieldFightBack:SetActive(false)
