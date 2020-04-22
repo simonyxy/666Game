@@ -22,7 +22,3 @@ function Main:LoadSprites()
         sprites[i] = Resources.Load("Textures/7Tex/Icon_"..i,Sprite)
     end
 end
-
-function Update()
-    x:Update()
-end

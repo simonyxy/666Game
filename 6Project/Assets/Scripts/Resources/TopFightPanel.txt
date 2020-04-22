@@ -80,7 +80,6 @@ function TopFightPanel:InitPanel()
     self.Shield  = self.C_Player.transform:Find("Shield").gameObject
     self.BigAttack= self.C_Player.transform:Find("BigAttack").gameObject
     self.ShieldFightBack = self.Main.transform:Find("TopPanel/ShieldFightBack").gameObject
-    -- self.hitImage= self.FireBall.transform:Find("hitImage").gameObject
     self.hpAddText     = self.hp.transform:Find("hpAddText").gameObject:GetComponent(Text)
     self.EnemyGetHitobj = self.Main.transform:Find("TopPanel/Enemy/EnemyGetHitTest").gameObject
     self.PlayerGetHitobj= self.C_Player.transform:Find("PlayerGetHitTest").gameObject
@@ -118,7 +117,7 @@ function TopFightPanel:InitPanel()
     self.Hp_text     = self.UIState.transform:Find("Hp_text/Hp_text").gameObject:GetComponent(Text)
     self.Level_text  = self.UIState.transform:Find("Level_text/Level_text (1)").gameObject:GetComponent(Text)
     
-    --怪物相关组件
+    --怪物UI组件
     self.BossHpBar = self.UIState.transform:Find("BossHpBg/BossHpBar").gameObject:GetComponent(Image)
     self.BossHpLoad= self.UIState.transform:Find("BossHpBg/BossHpLoad").gameObject:GetComponent(Image)
     self.BossHpText= self.UIState.transform:Find("BossHpBg/BossHpText").gameObject:GetComponent(Text)
@@ -130,7 +129,7 @@ function TopFightPanel:InitPanel()
 
     self.Hp_text.text    = self.PlayerData.HP_cur  --[[  .. "/" .. self.PlayerData.Hp_total]]
     self.Hp_text_Bar.fillAmount = self.PlayerData.HP_cur / self.PlayerData.Hp_total
-    self.Level_text.text = 1
+    self.Level_text.text = Level_cur
     self.BossHpLoad.fillAmount = 1
     self.shield_Status = false; --盾的状态
     self.foot_Status   = false; --鞋子状态
@@ -143,17 +142,6 @@ function TopFightPanel:InitPanel()
     end
 
     self:_addListener()
-
-    -- 测试专用
-    --  local info = {
-        --  [1] = {type = 18  } --3消回血
-        -- ,[2] = {type = 16 }  --3消回盾
-        -- ,[3] = {type = 4 } --3消加能量
-    --     ,[4] = {type = 3 } --4消回血
-    -- }
-    -- LuaTimer.Add(2000,function ()
-        -- self:UpdateRound(info)
-    -- end)
 end
 
 function TopFightPanel:_addListener()
@@ -632,7 +620,7 @@ function TopFightPanel:EnemyHpLoading()
 end
 
 function TopFightPanel:ShowWin()
-    GameObject.Find("Canvas/GameStartWindow"):GetComponent(AudioSource).enabled = false
+    -- GameObject.Find("Canvas/GameStartWindow"):GetComponent(AudioSource).enabled = false
     self.WinPanel:SetActive(true)
 end
 
@@ -681,7 +669,7 @@ function TopFightPanel:BossAttack(state)
         --计算伤害量 
         local bossDamage = math.ceil(0.72 * (self.EnemyData.Power - self.PlayerData.Shield_cur ))
         if state == "Angry" then 
-            bossDamage = bossDamage * 3
+            bossDamage = math.ceil(0.72 * (self.EnemyData.Power * 2.5 - self.PlayerData.Shield_cur ))
         end
         if bossDamage<= 0 then 
             bossDamage = 0 
