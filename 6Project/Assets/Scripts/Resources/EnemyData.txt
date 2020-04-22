@@ -6,12 +6,12 @@ local EnemyData ={
     Level_1 = {
         Power         = 80      --攻击力
         ,Shield_total = 20      --防御
-        ,Hp_total     = 580     --总血量
+        ,Hp_total     = 800     --总血量
     }
     ,Level_2 = {
-        Power         = 100      --攻击力
+        Power         = 120      --攻击力
         ,Shield_total = 30      --总护盾
-        ,Hp_total     = 1000     --总血量
+        ,Hp_total     = 1500     --总血量
     }
     ,Level_3 = {
         Power         = 150      --攻击力
