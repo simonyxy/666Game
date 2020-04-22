@@ -373,11 +373,11 @@ function XXL:IsInLine(value)--判断是否同行或同列
         if(t[i] == nil)then
             t[i] = 0
         end
+        t[i] = t[i] + 1
         if(t[i]>=5)then
             b = true
             break
         end
-        t[i] = t[i] + 1
         -- s = "{"
         -- for key,value in pairs(t) do
         --     s = s .. key.."="..value..","
