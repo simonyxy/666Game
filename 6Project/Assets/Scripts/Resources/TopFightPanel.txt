@@ -30,7 +30,7 @@ function TopFightPanel:InitData()
     self.EnemyData = require "EnemyData"
     self.PlayerData= require "PlayerData"
     --todo：获得当前等级
-    self.PlayerData.Level_cur = 1 
+    self.PlayerData.Level_cur = Level_cur
     --初始化玩家总值
     self.PlayerData.Power = self.PlayerData["Level_".. self.PlayerData.Level_cur].Power
     self.PlayerData.Hp_total = self.PlayerData["Level_".. self.PlayerData.Level_cur].Hp_total
@@ -160,13 +160,13 @@ function TopFightPanel:_addListener()
     self.winBtn:GetComponent(Button).onClick:AddListener(
         function()
             self:_delectListener()
-            MoveToMenu()
+            LevelSelectPanel:BackToMenu()
         end
     )
     self.LosePanel:GetComponent(Button).onClick:AddListener(
         function()
             self:_delectListener()
-            MoveToMenu()
+            LevelSelectPanel:BackToMenu()
         end
     )
     self.bigattack_btn.onClick:AddListener(

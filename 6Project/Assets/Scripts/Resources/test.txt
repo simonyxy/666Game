@@ -1,48 +1,20 @@
 import "UnityEngine"
 import "UnityEngine.UI"
 require "EventSystem"
-UnityEngine.Time.fixedDeltaTime = 0.1   
-
+require "LevelSelectPanel"
 local playerData = require "PlayerData"
 local EnemyData  = require "EnemyData"
 local _XXL = require "XXL"
 
-local welcomeCanvas     = GameObject.Find("Canvas/GameStartWindow")
-local gameStartBtn  = welcomeCanvas.transform:Find("gameStartBtn/gameStartBtn"):GetComponent(Button)
-local c_Player= GameObject.Find("GuildCrushWindow/TopPanel/C_Player")
-local boss    = GameObject.Find("GuildCrushWindow/TopPanel/Enemy/Boss")
-local UIState = GameObject.Find("GuildCrushWindow/TopPanel/UIState")
-local hpText  = UIState.transform:Find("Hp_text").gameObject
-local bosshpText=UIState.transform:Find("BossHpBg").gameObject
-
+XXLPanel = _XXL:new()
+sprites = {}
 Main = Main or {}
 
 --总游戏的入口
 function Awake()
     --游戏初始化加载全局使用的图
-    sprites = {}
-    --初始化数据
-    playerData.Item.Hp = TestPanel.p_hp
-    playerData.Item.Shield = TestPanel.p_shield
-    playerData.Item.Energy = TestPanel.p_energy
-    playerData["Level_1"].Power = TestPanel.p_power
-    playerData["Level_1"].Hp_total = TestPanel.p_hp_total
-    playerData["Level_1"].Shield_total= TestPanel.p_shield_total
-    EnemyData["Level_1"].Hp_total= TestPanel.b_hp_total
-    EnemyData["Level_1"].Power= TestPanel.b_power
-    EnemyData["Level_1"].Shield_total= TestPanel.b_fight_round
-    --全局Panel
-    XXLPanel = _XXL:new()
+    LevelSelectPanel:new()
     Main:LoadSprites()
-    Main:InitGame()
-end
-
-function MoveToMenu()
-    LeanTween.move(welcomeCanvas, Vector3(0,1,3) , 1)  
-    boss:SetActive(false)
-    hpText:SetActive(false)
-    c_Player:SetActive(false)
-    bosshpText:SetActive(false)
 end
 
 function Main:LoadSprites()
@@ -51,26 +23,6 @@ function Main:LoadSprites()
     end
 end
 
-function Main:InitGame()
-    boss:SetActive(false)
-    hpText:SetActive(false)
-    c_Player:SetActive(false)
-    bosshpText:SetActive(false)
-    gameStartBtn.onClick:AddListener(
-    function()
-        --游戏开始
-        XXLPanel:Hello()
-        LeanTween.move(welcomeCanvas, Vector3(-3,1,3) , 1)
-        AudioSource.PlayClipAtPoint(gameStartBtn.gameObject:GetComponent(AudioSource).clip,gameStartBtn.gameObject.transform.position)
-        LuaTimer.Add(300,function ()
-            boss:SetActive(true)
-            hpText:SetActive(true)
-            c_Player:SetActive(true)
-            bosshpText:SetActive(true)
-        end)
-    end
-)
-end
 function Update()
     x:Update()
 end

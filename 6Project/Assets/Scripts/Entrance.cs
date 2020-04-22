@@ -23,10 +23,7 @@ public class Entrance : MonoBehaviour
             svr.start("test");
             luaFunction = LuaSvr.mainState.getFunction("Awake");
             updateFunction = LuaSvr.mainState.getFunction("Update");
-            //if (luaFunction != null)
-            //{
-            //    luaFunction.call();
-            //}
+            luaFunction.call();
         });
         LeanTween.move(gameObject, new Vector3(0f, 1f, 2f), 1f);
     }
@@ -39,7 +36,6 @@ public class Entrance : MonoBehaviour
 
     public void start()
     {
-        luaFunction.call();
     }
 
     // SLua Loader代理方法

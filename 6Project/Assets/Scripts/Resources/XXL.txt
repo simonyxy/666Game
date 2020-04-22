@@ -135,9 +135,9 @@ function XXL:SelectBLock(block)
     local image = block.selectImage:GetComponent(Image)
     if(TopFightPanel:GetInstance().foot_Status)then
         Debug.Log("fffffffffffffffffffffffoot")
-        -- image.color = Color(255,0,0,1)
+        image.color = Color(0,255,255,1)
     else
-        -- image.color = Color(0,0,0,1)
+        image.color = Color(255,255,255,1)
     end
     Debug.Log(TopFightPanel:GetInstance().shield_Status)
     block.selectImage.gameObject:SetActive(true)
