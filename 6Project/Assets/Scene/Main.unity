@@ -210,6 +210,11 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 82021476824833760, guid: ba110ffcb9ffae944ac5ed0b56bf2f81,
+        type: 2}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 2b5ab6a9f14686a4da3a74ea9a105e9e, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ba110ffcb9ffae944ac5ed0b56bf2f81, type: 2}
   m_IsPrefabParent: 0
