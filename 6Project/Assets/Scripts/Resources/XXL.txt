@@ -133,14 +133,17 @@ end
 function XXL:SelectBLock(block)
     clickBlocks.firstBlock = block
     local image = block.selectImage:GetComponent(Image)
-    if(TopFightPanel:GetInstance().foot_Status)then
-        Debug.Log("fffffffffffffffffffffffoot")
-        image.color = Color(0,255,255,1)
-    else
-        image.color = Color(255,255,255,1)
-    end
-    Debug.Log(TopFightPanel:GetInstance().shield_Status)
     block.selectImage.gameObject:SetActive(true)
+    if(TopFightPanel:GetInstance().foot_Status)then
+        block.selectImage:GetComponent(Animator):SetBool("isShine",true)
+        Debug.Log("true")
+        -- image.color = Color(0,255,255,1)
+    else
+        -- image.color = Color(255,255,255,1)
+        block.selectImage:GetComponent(Animator):SetBool("isShine",false)
+        Debug.Log("false")
+    end
+    -- Debug.Log(TopFightPanel:GetInstance().shield_Status)
 end
 
 function XXL:CancelSelectBlock()
